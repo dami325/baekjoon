@@ -5,15 +5,19 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        for (int i = 0; i < n; i++) {
-            String result = "";
-            for (int j = 0; j <= i; j++) {
-                result += "*";
-                if (j == i) {
-                    System.out.println(result);
-                }
+        int line = sc.nextInt();
+        String result = "";
+        for (int i = 1; i <= line; i++) {
+            int space = line - i;
+            for (int draw = 1; draw <= space; draw++) {
+                result += " ";
             }
+
+            for (int star = 1; star <= i; star++) {
+                result += "*";
+            }
+            result += "\n";
         }
+        System.out.println(result);
     }
 }
