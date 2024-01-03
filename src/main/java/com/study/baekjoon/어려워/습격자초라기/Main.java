@@ -18,60 +18,94 @@ public class Main {
                 int areaCount = Integer.parseInt(st.nextToken());
                 int memberCount = Integer.parseInt(st.nextToken());
 
-                List<Integer> enemyList = Arrays.stream(br.readLine().split(" ")).map(Integer::parseInt).collect(Collectors.toList());
-                List<Integer> enemyList2 = Arrays.stream(br.readLine().split(" ")).map(Integer::parseInt).collect(Collectors.toList());
+                List<Integer> enemyList = new ArrayList<>();
+                st = new StringTokenizer(br.readLine());
+                while (st.hasMoreTokens()) {
+                    enemyList.add(Integer.parseInt(st.nextToken()));
+                }
 
-                enemyList.addAll(enemyList2);
+                st = new StringTokenizer(br.readLine());
+                while (st.hasMoreTokens()) {
+                    enemyList.add(Integer.parseInt(st.nextToken()));
+                }
 
                 int size = enemyList.size();
                 int middleIndex = areaCount - 1;
                 int lastIndex = size - 1;
 
-                Map<String, Integer> totalCase = new HashMap<>();
+                Map<String, Integer> totalCaseMap = new HashMap<>();
+
                 for (int i = 0; i < size; i++) {
                     int upCase = i + areaCount;
                     int rightCase = i + 1;
                     int lastIndexRightCase = i - middleIndex;
 
                     if (i == middleIndex) {
-                        putTotalCase(i, lastIndexRightCase, enemyList, totalCase);
-                        putTotalCase(i, upCase, enemyList, totalCase);
+                        putTotalCase(i, lastIndexRightCase, enemyList, totalCaseMap);
+                        putTotalCase(i, upCase, enemyList, totalCaseMap);
                     } else if (i == lastIndex) {
-                        putTotalCase(i, lastIndexRightCase, enemyList, totalCase);
+                        putTotalCase(i, lastIndexRightCase, enemyList, totalCaseMap);
                     } else if (i < areaCount) {
-                        putTotalCase(i, rightCase, enemyList, totalCase);
-                        putTotalCase(i, upCase, enemyList, totalCase);
+                        putTotalCase(i, rightCase, enemyList, totalCaseMap);
+                        putTotalCase(i, upCase, enemyList, totalCaseMap);
                     } else {
-                        putTotalCase(i, rightCase, enemyList, totalCase);
+                        putTotalCase(i, rightCase, enemyList, totalCaseMap);
                     }
                 }
 
                 Map<String, Integer> resultMap = new HashMap<>();
 
                 // 합이 100이면 resultMap 추가 100이 넘으면 case 에서 삭제
-                Set<String> cloneKey1 = new HashSet<>(totalCase.keySet());
-                for (String key : cloneKey1) {
+                for (String key : new HashSet<>(totalCaseMap.keySet())) {
 
-                    Integer value = totalCase.get(key);
+                    Integer value = totalCaseMap.get(key);
                     if(value == null) continue;
 
-                    if (value == 100) {
-                        resultMap.put(key, 100);
-                        Set<String> cloneKey2 = new HashSet<>(totalCase.keySet());
-                        for (String keys : cloneKey2) {
-                            if(Arrays.stream(keys.split(",")).anyMatch(i -> {
-                                String[] split = key.split(",");
-                                return i.equals(split[0]) || i.equals(split[1]);
-                            })){
-                                totalCase.remove(keys);
-                            }
-                        }
-                    } else if (value > 100) {
-                        totalCase.remove(key);
+                    if (value == memberCount) {
+                        resultMap.put(key, memberCount);
+                        removeContainsKey(totalCaseMap, key);
+                        continue;
+                    } else if (value > memberCount) {
+                        totalCaseMap.remove(key);
+                        continue;
+                    }  else {
+                        continue;
                     }
+
                 }
 
+                // 나머지
+                List<String> indexArray = new ArrayList<>();
+                totalCaseMap.entrySet().stream()
+                        .sorted((o1, o2) -> o2.getValue() - o1.getValue())
+                        .forEach(entry -> {
+                            String key = entry.getKey();
+                            Integer value = entry.getValue();
+                            String[] split = key.split(",");
+                            if (!indexArray.contains(split[0]) || !indexArray.contains(split[1])){
+                                indexArray.addAll(List.of(split));
+                                resultMap.put(key, value);
+                            }
+                        });
+
+                int mapSize = resultMap.size();
+                int solo = ((areaCount*2) - (mapSize*2));
+
+                int result = mapSize + solo;
+
+                bw.write(result + "");
+
             } // while
+        }
+    }
+
+    private static void removeContainsKey(Map<String, Integer> totalCase, String key) {
+        String[] split = key.split(",");
+        for (String keys : new HashSet<>(totalCase.keySet())) {
+            if(Arrays.stream(keys.split(","))
+                    .anyMatch(i -> i.equals(split[0]) || i.equals(split[1]))){
+                totalCase.remove(keys);
+            }
         }
     }
 
