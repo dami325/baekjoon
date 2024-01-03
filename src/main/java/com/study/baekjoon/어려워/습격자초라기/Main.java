@@ -27,7 +27,7 @@ public class Main {
                 int middleIndex = areaCount - 1;
                 int lastIndex = size - 1;
 
-                Map<Integer[], Integer> totalCase = new HashMap<>();
+                Map<String, Integer> totalCase = new HashMap<>();
                 for (int i = 0; i < size; i++) {
                     int upCase = i + areaCount;
                     int rightCase = i + 1;
@@ -46,28 +46,36 @@ public class Main {
                     }
                 }
 
-                Map<Integer[], Integer> resultMap = new HashMap<>();
-                
-                for (Map.Entry<Integer[], Integer> caseEntry : totalCase.entrySet()) {
-                    if (caseEntry.getValue() == 100) {
-                        resultMap.put(caseEntry.getKey(), 100);
+                Map<String, Integer> resultMap = new HashMap<>();
 
-                        Integer[] key = caseEntry.getKey();
+                // 합이 100이면 resultMap 추가 100이 넘으면 case 에서 삭제
+                Set<String> cloneKey1 = new HashSet<>(totalCase.keySet());
+                for (String key : cloneKey1) {
 
-                        Set<Integer[]> integers = totalCase.keySet();
+                    Integer value = totalCase.get(key);
+                    if(value == null) continue;
 
-                        for (Integer[] integer : integers) {
-                            if(Arrays.stream(integer).anyMatch(i -> i.equals(key[0]) || i.equals(key[1]))){
-                               totalCase.remove(integer);
+                    if (value == 100) {
+                        resultMap.put(key, 100);
+                        Set<String> cloneKey2 = new HashSet<>(totalCase.keySet());
+                        for (String keys : cloneKey2) {
+                            if(Arrays.stream(keys.split(",")).anyMatch(i -> {
+                                String[] split = key.split(",");
+                                return i.equals(split[0]) || i.equals(split[1]);
+                            })){
+                                totalCase.remove(keys);
                             }
                         }
+                    } else if (value > 100) {
+                        totalCase.remove(key);
                     }
                 }
-            }
+
+            } // while
         }
     }
 
-    private static void putTotalCase(int firstIndex, int secondIndex, List<Integer> enemyList, Map<Integer[], Integer> totalCase) {
-        totalCase.put(new Integer[]{firstIndex,secondIndex}, enemyList.get(firstIndex) + enemyList.get(secondIndex));
+    private static void putTotalCase(int firstIndex, int secondIndex, List<Integer> enemyList, Map<String, Integer> totalCase) {
+        totalCase.put(firstIndex + "," + secondIndex, enemyList.get(firstIndex) + enemyList.get(secondIndex));
     }
 }
