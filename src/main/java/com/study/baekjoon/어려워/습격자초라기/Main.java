@@ -5,111 +5,113 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
+
     public static void main(String[] args) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out))) {
+             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));) {
 
+
+            // 테스트 수
             int testCount = Integer.parseInt(br.readLine());
 
             while (testCount-- > 0) {
-
                 StringTokenizer st = new StringTokenizer(br.readLine());
 
+                // 구역 수
                 int areaCount = Integer.parseInt(st.nextToken());
+
+                int lastIndex = areaCount - 1;
+
+                // 대원 수
                 int memberCount = Integer.parseInt(st.nextToken());
 
-                List<Integer> enemyList = new ArrayList<>();
-                st = new StringTokenizer(br.readLine());
-                while (st.hasMoreTokens()) {
-                    enemyList.add(Integer.parseInt(st.nextToken()));
-                }
+                // 1 ~ N
+                String[] bottomList = br.readLine().split(" ");
+                // N ~ N2
+                String[] topList = br.readLine().split(" ");
 
-                st = new StringTokenizer(br.readLine());
-                while (st.hasMoreTokens()) {
-                    enemyList.add(Integer.parseInt(st.nextToken()));
-                }
-
-                int size = enemyList.size();
-                int middleIndex = areaCount - 1;
-                int lastIndex = size - 1;
-
-                Map<String, Integer> totalCaseMap = new HashMap<>();
-
-                for (int i = 0; i < size; i++) {
-                    int upCase = i + areaCount;
-                    int rightCase = i + 1;
-                    int lastIndexRightCase = i - middleIndex;
-
-                    if (i == middleIndex) {
-                        putTotalCase(i, lastIndexRightCase, enemyList, totalCaseMap);
-                        putTotalCase(i, upCase, enemyList, totalCaseMap);
-                    } else if (i == lastIndex) {
-                        putTotalCase(i, lastIndexRightCase, enemyList, totalCaseMap);
-                    } else if (i < areaCount) {
-                        putTotalCase(i, rightCase, enemyList, totalCaseMap);
-                        putTotalCase(i, upCase, enemyList, totalCaseMap);
-                    } else {
-                        putTotalCase(i, rightCase, enemyList, totalCaseMap);
-                    }
-                }
 
                 Map<String, Integer> resultMap = new HashMap<>();
+                Map<String, Integer> caseMap = new HashMap<>();
 
-                // 합이 100이면 resultMap 추가 100이 넘으면 case 에서 삭제
-                for (String key : new HashSet<>(totalCaseMap.keySet())) {
+                for (int i = 0; i < areaCount; i++) {
 
-                    Integer value = totalCaseMap.get(key);
-                    if(value == null) continue;
+                    String bottomStr = bottomList[i];
+                    String topStr = topList[i];
 
-                    if (value == memberCount) {
-                        resultMap.put(key, memberCount);
-                        removeContainsKey(totalCaseMap, key);
-                        continue;
-                    } else if (value > memberCount) {
-                        totalCaseMap.remove(key);
-                        continue;
-                    }  else {
-                        continue;
+                    int sum = getSum(bottomStr, topStr);
+                    if (sum <= memberCount) {
+                        caseMap.put(getKey(i, i + areaCount), sum);
                     }
 
+                    if (i != lastIndex) {
+                        int rightIndex = i + 1;
+                        String bottomRight = bottomList[rightIndex];
+                        String topRight = topList[rightIndex];
+
+                        int sum1 = getSum(bottomStr, bottomRight);
+                        if (sum1 <= memberCount) {
+                            caseMap.put(getKey(i, rightIndex), sum1);
+                        }
+
+                        int sum2 = getSum(topStr, topRight);
+                        if (sum2 <= memberCount) {
+                            caseMap.put(getKey(i + areaCount, rightIndex + areaCount), sum2);
+                        }
+
+                    } else {
+
+                        int ifLastIndexRightIndex = i - lastIndex;
+
+                        String bottomRight = bottomList[ifLastIndexRightIndex];
+                        String topRight = topList[ifLastIndexRightIndex];
+                        int sum1 = getSum(bottomStr, bottomRight);
+                        if (sum1 <= memberCount) {
+                            caseMap.put(getKey(i, ifLastIndexRightIndex), sum1);
+                        }
+                        int sum2 = getSum(topStr, topRight);
+                        if (sum2 <= memberCount) {
+                            caseMap.put(getKey(i + areaCount, ifLastIndexRightIndex + areaCount), sum2);
+                        }
+
+                    }
                 }
 
-                // 나머지
-                List<String> indexArray = new ArrayList<>();
-                totalCaseMap.entrySet().stream()
-                        .sorted((o1, o2) -> o2.getValue() - o1.getValue())
-                        .forEach(entry -> {
-                            String key = entry.getKey();
-                            Integer value = entry.getValue();
-                            String[] split = key.split(",");
-                            if (!indexArray.contains(split[0]) || !indexArray.contains(split[1])){
-                                indexArray.addAll(List.of(split));
-                                resultMap.put(key, value);
-                            }
-                        });
 
-                int mapSize = resultMap.size();
-                int solo = ((areaCount*2) - (mapSize*2));
+                List<Map.Entry<String, Integer>> collect = caseMap.entrySet()
+                        .stream()
+                        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                        .collect(Collectors.toList());
 
-                int result = mapSize + solo;
+                List<String> indexList = new ArrayList<>();
+                for (Map.Entry<String, Integer> entry : collect) {
+                    String key = entry.getKey();
+                    String[] split = key.split(",");
+                    if (indexList.contains(split[0]) || indexList.contains(split[1])) {
+                        continue;
+                    }
+                    indexList.add(split[0]);
+                    indexList.add(split[1]);
+                    resultMap.put(key, entry.getValue());
+                }
 
-                bw.write(result + "");
-
+                int size = resultMap.size();
+                String result = String.valueOf(size + (areaCount * 2 - size * 2));
+                bw.write(result);
+                bw.newLine();
             } // while
         }
     }
 
-    private static void removeContainsKey(Map<String, Integer> totalCase, String key) {
-        String[] split = key.split(",");
-        for (String keys : new HashSet<>(totalCase.keySet())) {
-            if(Arrays.stream(keys.split(","))
-                    .anyMatch(i -> i.equals(split[0]) || i.equals(split[1]))){
-                totalCase.remove(keys);
-            }
-        }
+    private static String getKey(int index1, int index2) {
+        return index1 + "," + index2;
     }
 
-    private static void putTotalCase(int firstIndex, int secondIndex, List<Integer> enemyList, Map<String, Integer> totalCase) {
-        totalCase.put(firstIndex + "," + secondIndex, enemyList.get(firstIndex) + enemyList.get(secondIndex));
+    private static int getSum(String str1, String str2) {
+        int i1 = Integer.parseInt(str1);
+        int i2 = Integer.parseInt(str2);
+        return i1 + i2;
     }
+
 }
+
