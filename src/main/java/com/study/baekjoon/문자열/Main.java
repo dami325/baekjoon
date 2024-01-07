@@ -8,13 +8,12 @@ public class Main {
         try(BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out))) {
 
-            int testCount = Integer.parseInt(br.readLine());
-
-            for(int i = 0; i < testCount; i++) {
-                String word = br.readLine();
-
-                System.out.println(word.charAt(0) + "" + word.charAt(word.length() - 1));
-            }
+            System.out.println("         ,r'\"7");
+            System.out.println("r`-_   ,'  ,/");
+            System.out.println(" \\. \". L_r'");
+            System.out.println("   `~\\/");
+            System.out.println("      |");
+            System.out.println("      |");
 
         } catch (IOException e) {
             e.printStackTrace();
