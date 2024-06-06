@@ -3,50 +3,44 @@ package com.study.baekjoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
-
-    private static StringBuilder sb = new StringBuilder();
     public static void main(String[] args) {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 
-            int N = Integer.parseInt(br.readLine());
+            Map<String,Integer> stringKeyMap = new HashMap<>();
+            Map<Integer,String> intKeyMap = new HashMap<>();
 
-            String[] strArr = new String[N];
+            String[] split = br.readLine().split(" ");
 
-            for (int i = 0; i < N; i++) {
-                strArr[i] = br.readLine();
+            int N = Integer.parseInt(split[0]);
+            int M = Integer.parseInt(split[1]);
+
+            for (int i = 1; i <= N; i++) {
+                String line = br.readLine();
+                stringKeyMap.put(line, i);
+                intKeyMap.put(i, line);
             }
 
-            if (strArr.length == 1) {
-                System.out.println(strArr[0]);
-                return;
-            }
-            for (int i = 0; i < strArr.length-1; i++) {
-                if(i == 0){
-                    strCompare(strArr[i], strArr[i + 1]);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 1; i <= M; i++) {
+                String s = br.readLine();
+
+                Integer x = stringKeyMap.get(s);
+                if (x == null) {
+                    sb.append(intKeyMap.get(Integer.parseInt(s)));
+                } else {
+                    sb.append(x);
                 }
-                strCompare(sb.toString(), strArr[i + 1]);
+                sb.append("\n");
             }
+            System.out.println(sb);
 
-            System.out.println(sb.toString());
 
-        } catch (IOException e) {
-
+        }catch (IOException e) {
+            e.printStackTrace();
         }
-
-    }
-
-    private static String strCompare(String str1, String str2) {
-        sb.setLength(0);
-
-        for (int i = 0; i < str1.length(); i++) {
-            if(str1.charAt(i) == str2.charAt(i)){
-                sb.append(str1.charAt(i));
-            } else {
-                sb.append("?");
-            }
-        }
-        return sb.toString();
     }
 }
