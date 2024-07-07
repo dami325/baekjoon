@@ -1,4 +1,4 @@
-package com.study.baekjoon.정렬.대표값2;
+package com.study.baekjoon.알고리즘분류.정렬.대표값2;
 
 import java.io.*;
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package com.study.baekjoon.dynamicprograming.구간합구하기2;
+package com.study.baekjoon.알고리즘분류.dynamicprograming.구간합구하기2;
 
 import java.io.BufferedReader;
 import java.io.IOException;

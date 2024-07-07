@@ -1,4 +1,4 @@
-package com.study.baekjoon.dynamicprograming.습격자초라기;
+package com.study.baekjoon.알고리즘분류.dynamicprograming.습격자초라기;
 
 import java.io.*;
 import java.util.*;

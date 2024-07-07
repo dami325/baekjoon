@@ -1,4 +1,4 @@
-package com.study.baekjoon.정렬.수정렬하기2;
+package com.study.baekjoon.알고리즘분류.정렬.수정렬하기2;
 
 import java.io.*;
 import java.util.Arrays;

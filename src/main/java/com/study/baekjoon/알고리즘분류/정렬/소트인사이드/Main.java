@@ -1,4 +1,4 @@
-package com.study.baekjoon.정렬.소트인사이드;
+package com.study.baekjoon.알고리즘분류.정렬.소트인사이드;
 
 import java.io.BufferedReader;
 import java.io.IOException;

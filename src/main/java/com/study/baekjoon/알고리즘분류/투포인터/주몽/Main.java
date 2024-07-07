@@ -1,4 +1,4 @@
-package com.study.baekjoon.투포인터.주몽;
+package com.study.baekjoon.알고리즘분류.투포인터.주몽;
 
 import java.io.BufferedReader;
 import java.io.IOException;

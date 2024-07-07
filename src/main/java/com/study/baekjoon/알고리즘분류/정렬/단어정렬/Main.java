@@ -1,4 +1,4 @@
-package com.study.baekjoon.정렬.단어정렬;
+package com.study.baekjoon.알고리즘분류.정렬.단어정렬;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
