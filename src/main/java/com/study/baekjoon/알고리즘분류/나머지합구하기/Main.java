@@ -1,4 +1,4 @@
-package com.study.baekjoon.알고리즘코딩테스트.나머지합구하기;
+package com.study.baekjoon.알고리즘분류.나머지합구하기;
 
 import java.util.Scanner;
 

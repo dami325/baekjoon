@@ -1,4 +1,4 @@
-package com.study.baekjoon.재귀.피보나치;
+package com.study.baekjoon.알고리즘분류.재귀.피보나치;
 
 import java.util.HashMap;
 import java.util.Scanner;

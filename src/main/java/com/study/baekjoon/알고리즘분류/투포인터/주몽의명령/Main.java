@@ -1,4 +1,4 @@
-package com.study.baekjoon.알고리즘코딩테스트.투포인트.주몽의명령;
+package com.study.baekjoon.알고리즘분류.투포인터.주몽의명령;
 
 import java.util.Arrays;
 import java.util.Scanner;

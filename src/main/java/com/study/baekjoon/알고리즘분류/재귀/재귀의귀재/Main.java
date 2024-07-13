@@ -1,4 +1,4 @@
-package com.study.baekjoon.재귀.재귀의귀재;
+package com.study.baekjoon.알고리즘분류.재귀.재귀의귀재;
 
 import java.util.Scanner;
 

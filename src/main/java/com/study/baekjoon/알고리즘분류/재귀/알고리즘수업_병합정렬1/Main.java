@@ -1,4 +1,4 @@
-package com.study.baekjoon.재귀.알고리즘수업_병합정렬1;
+package com.study.baekjoon.알고리즘분류.재귀.알고리즘수업_병합정렬1;
 
 import java.io.BufferedReader;
 import java.io.IOException;

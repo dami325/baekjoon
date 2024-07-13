@@ -1,4 +1,4 @@
-package com.study.baekjoon.알고리즘코딩테스트.투포인트.연속된자연수의합구하기;
+package com.study.baekjoon.알고리즘분류.투포인터.연속된자연수의합구하기;
 
 import java.util.Scanner;
 

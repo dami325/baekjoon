@@ -1,4 +1,4 @@
-package com.study.baekjoon.재귀.팩토리얼2;
+package com.study.baekjoon.알고리즘분류.재귀.팩토리얼2;
 
 import java.util.Scanner;
 
