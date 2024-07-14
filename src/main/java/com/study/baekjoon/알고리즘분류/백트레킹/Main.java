@@ -1,4 +1,4 @@
-package com.study.baekjoon.백트레킹;
+package com.study.baekjoon.알고리즘분류.백트레킹;
 
 import java.io.BufferedReader;
 import java.io.IOException;

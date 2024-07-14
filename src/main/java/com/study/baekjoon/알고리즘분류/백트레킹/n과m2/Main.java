@@ -1,4 +1,4 @@
-package com.study.baekjoon.백트레킹.n과m2;
+package com.study.baekjoon.알고리즘분류.백트레킹.n과m2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
