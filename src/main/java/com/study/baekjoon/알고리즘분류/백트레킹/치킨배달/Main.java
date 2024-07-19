@@ -4,41 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.StringTokenizer;
 
 public class Main {
 
-    /**
-     * 도시에 있는 모든 치킨거리 에지 중 가장 가중치가 적은 M개만 남기고 폐업
-     * <p>
-     * 모든 가중치의 합을 출력
-     * <p>
-     * 먼저 에지가 기준이니 에지 리스트로 해본다.
-     * <p>
-     * 풀이
-     * <p>
-     * N , M 초기화
-     * 0(빈칸), 1(집), 2(치킨집) 을 가진 NXN 배열 초기화
-     * M만큼 집합으로 합계를 구해둬야 할듯
-     * 그중 가장 작은 집합 출력
-     * <p>
-     * 하나의 집 [1,4]의 좌표가 있을 경우 나머지 치킨집 좌표가 모두 있으면[1,2],[4,1],[5,1],[5,2],[5,5]
-     * 가장 가까운 치킨집 구하는 공식 = for(집[i]인접 리스트) min = Math.min(abs(집x -치킨x) +abs(집y - 치킨y))
-     * <p>
-     * 각 집에대해 가장 가까운 치킨거리 구할 수 있음
-     * <p>
-     * <p>
-     * 1. 단순히 M을 가장 많은 가까운 집을 보유한 치킨집만 나두고 폐업한다면 그게 최적화일까?
-     * 2. 치킨집의 모든 집에대한 거리의 합을 저장해두고 그게 가장 낮은 치킨집만 살아남으면 그게 최선인가?
-     * 3. 치킨집의 M 그룹 조합을 해서 조합별 치킨거리를 구하고 그게 가장 낮은게 최선인가?
-     */
     private static int N,M;
     private static boolean[] visited;
-    private static ArrayList<ChickenNode> chickenList = new ArrayList<>();
-    private static ArrayList<HomeNode> homeList = new ArrayList<>();
-    private static int[] sum;
-
+    private static ArrayList<House> houseArrayList = new ArrayList();
+    private static ArrayList<Chicken> chickenArrayList = new ArrayList();
+    private static int[][] arr;
+    private static int result = Integer.MAX_VALUE;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -47,147 +22,96 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        chickenList = new ArrayList<>();
-        homeList = new ArrayList<>();
+        arr = new int[N + 1][N + 1];
 
         for (int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
-
             for (int j = 1; j <= N; j++) {
                 int num = Integer.parseInt(st.nextToken());
-                if (num == 2) {
-                    chickenList.add(new ChickenNode(i, j));
-                } else if (num == 1) {
-                    homeList.add(new HomeNode(i, j));
+                arr[i][j] = num;
+                if (num == 1) {
+                    houseArrayList.add(new House(i, j));
+                } else if (num == 2) {
+                    chickenArrayList.add(new Chicken(i, j));
                 }
             }
         }
 
-
-        visited = new boolean[chickenList.size()];
-
-        sum = new int[M];
+        visited = new boolean[chickenArrayList.size()];
 
         dfs(0,0);
 
+        System.out.println(result);
 
-        br.close();
     }
 
-    private static void dfs(int depth,int sum) {
+    /**
+     * 치킨집 그룹 경우의수 만큼 모두 탐색해두기
+     *
+     * 치킨집 1
+     * 치킨집 2
+     * 치킨집 3
+     * 치킨집 4 가 있을경우 M == 2일때
+     *
+     * (1,2) (1,3) (1,4) (2,3) (2,4) (3,4)
+     *
+     * 그룹 중 최단거리 가장 짧은 그룹
+     *
+     */
+    private static void dfs(int chickenIndex, int depth) {
         if (depth == M) {
-            return;
-        }
+            /**
+             * M만큼의 집합 치킨집이 모였을 경우 여기 도착
+             * 여기에 왔다는건 visited = true 가 무조건 3개일 테니 true인 치킨 거리를 구해서 결과값에 넣으면될듯
+             */
+            int totalStreetCount = 0; // 해당 그룹 도시의 치킨 거리
+            for (int i = 0; i < houseArrayList.size(); i++) {
+                int chickenStreet = Integer.MAX_VALUE;
 
-        for (int i = depth; i < chickenList.size(); i++) {
-            if (!visited[i]) {
-                visited[i] = true;
-                ChickenNode chickenNode = chickenList.get(i);
-                int chickenNodeX = chickenNode.getX();
-                int chickenNodeY = chickenNode.getY();
-                for (int j = 0; j < homeList.size(); j++) {
-                    HomeNode homeNode = homeList.get(j);
-                    int homeNodeX = homeNode.getX();
-                    int homeNodeY = homeNode.getY();
-                    int totalValue = Math.abs(homeNodeX - chickenNodeX) + Math.abs(homeNodeY - chickenNodeY);
-                    if(totalValue < homeNode.getTotalValue()){
-                        homeNode.setChickenX(chickenNodeX);
-                        homeNode.setChickenY(chickenNodeY);
-                        homeNode.setTotalValue(totalValue);
+                House house = houseArrayList.get(i);
+
+                for (int j = 0; j < chickenArrayList.size(); j++) {
+                    if (visited[j]) { // 집합에 속한 치킨집일 경우
+                        Chicken chicken = chickenArrayList.get(j);
+
+                        // 이 집의 치킨 거리 구하기 모든 치킨집을 돌며 가장 짧은 거리 저장
+                        chickenStreet = Math.min(chickenStreet, Math.abs(house.x - chicken.x) + Math.abs(house.y - chicken.y));
                     }
-                    chickenNode.addTotal(totalValue);
                 }
-                dfs(depth + 1);
-                visited[i] = false;
+                // 결과 저장
+                totalStreetCount += chickenStreet;
             }
+
+            // 전체 결과에 더 작은그룹 거리를 저장
+            result = Math.min(result, totalStreetCount);
+            return ;
+        }
+
+        for (int i = chickenIndex; i < chickenArrayList.size(); i++) {
+            visited[i] = true;
+            dfs(i + 1, depth + 1);
+            visited[i] = false;
+        }
+
+    }
+
+    private static class House {
+        private int x;
+        private int y;
+
+        public House(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 
-    private static class ChickenNode {
+    private static class Chicken {
         private int x;
         private int y;
-        private int totalValue;
 
-        public ChickenNode(int x, int y) {
+        public Chicken(int x, int y) {
             this.x = x;
             this.y = y;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public void setX(int x) {
-            this.x = x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public void setY(int y) {
-            this.y = y;
-        }
-
-        public int getTotalValue() {
-            return totalValue;
-        }
-
-        public void addTotal(int totalValue) {
-            this.totalValue += totalValue;
-        }
-    }
-
-    private static class HomeNode {
-        private int x;
-        private int y;
-        private int chickenX;
-        private int chickenY;
-        private int totalValue = 2500;
-
-        public int getTotalValue() {
-            return totalValue;
-        }
-
-        public void setTotalValue(int totalValue) {
-            this.totalValue = totalValue;
-        }
-
-        public HomeNode(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public void setX(int x) {
-            this.x = x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public void setY(int y) {
-            this.y = y;
-        }
-
-        public int getChickenX() {
-            return chickenX;
-        }
-
-        public void setChickenX(int chickenX) {
-            this.chickenX = chickenX;
-        }
-
-        public int getChickenY() {
-            return chickenY;
-        }
-
-        public void setChickenY(int chickenY) {
-            this.chickenY = chickenY;
         }
     }
 }
