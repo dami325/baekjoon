@@ -12,11 +12,10 @@ public class Main {
                 int length = s.length();
 
 
-                for (int size = 1; size <= s.length(); size++) {
+                for (int size = 1; size <= s.length() / 2; size++) {
                     Queue<String> q = new ArrayDeque<>();
                     for (int j = 0; j <= s.length() - size; j += size) {
-                        String substring = s.substring(j, j + size);
-                        q.offer(substring);
+                        q.offer(s.substring(j, j + size));
                     }
 
                     String result = s;
@@ -36,12 +35,11 @@ public class Main {
                         }
                     }
 
-                    length = length > result.length() ? result.length() : length;
+                    length = Math.min(length, result.length());
 
                 }
                 return length;
             }
-
         }
 
         System.out.println(new Solution().solution("abcabcabcabcdededededede"));
