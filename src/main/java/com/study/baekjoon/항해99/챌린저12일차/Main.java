@@ -4,11 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class Main {
 
-    private static int n, result, count;
-    private static boolean[] visited;
+    private static int n;
+    private static int[] dp;
     private static ArrayList<Integer>[] graph;
 
     public static void main(String[] args) {
@@ -16,9 +18,9 @@ public class Main {
 
             n = Integer.parseInt(br.readLine());
 
-            visited = new boolean[n];
-
             graph = new ArrayList[n];
+
+            dp = new int[n];
 
             String[] arr = br.readLine().split(" ");
 
@@ -26,14 +28,13 @@ public class Main {
                 graph[i] = new ArrayList<>();
             }
 
-            for (int i = 0; i < arr.length; i++) {
-                int num = Integer.parseInt(arr[i]);
-                graph[num].add(i);
-                graph[i].add(num);
+            for (int i = 1; i < arr.length; i++) {
+                graph[Integer.parseInt(arr[i])].add(i);
             }
 
+            System.out.println(dfs(0));
 
-            System.out.println(result);
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,24 +42,21 @@ public class Main {
         ;
     }
 
-    private static void dfs(int num) {
-        if (num == -1) {
-            result = Math.max(count, result);
-            count = 0;
-            return;
+    private static int dfs(int cur) {
+        int cnt = 0, max = 0;
+        Queue<Integer> q = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        for (Integer next : graph[cur]) {
+            dp[next] = dfs(next);
+            q.add(dp[next]);
         }
 
-        if (!visited[num]) {
-            visited[num] = true;
-            ArrayList<Integer> integers = graph[num];
-
-            for (Integer integer : integers) {
-                dfs(integer);
-            }
-
-            visited[num] = false;
+        while (!q.isEmpty()) {
+            int count = q.poll();
+            cnt++;
+            max = Math.max(max, count + cnt);
         }
 
+        return max;
     }
 
 }
