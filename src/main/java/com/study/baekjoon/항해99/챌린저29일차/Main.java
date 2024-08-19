@@ -1,20 +1,17 @@
 package com.study.baekjoon.항해99.챌린저29일차;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 class Solution {
-    private static class Job implements Comparable<Job> {
-        int start, end, profit;
-
+    private static class Job {
+        private int start;
+        private int end;
+        private int profit;
         Job(int start, int end, int profit) {
             this.start = start;
             this.end = end;
             this.profit = profit;
-        }
-
-        @Override
-        public int compareTo(Job other) {
-            return this.end - other.end;
         }
     }
 
@@ -27,9 +24,10 @@ class Solution {
         }
 
         // 종료 시간을 기준으로 정렬
-        Arrays.sort(jobs);
+        Arrays.sort(jobs,(Comparator.comparingInt(o -> o.end)));
 
         int[] dp = new int[n];
+
         dp[0] = jobs[0].profit;
 
         for (int i = 1; i < n; i++) {
@@ -37,6 +35,7 @@ class Solution {
 
             // 이진 탐색으로 겹치지 않는 이전 작업 찾기
             int l = binarySearch(jobs, i);
+
             if (l != -1) {
                 includeProfit += dp[l];
             }
