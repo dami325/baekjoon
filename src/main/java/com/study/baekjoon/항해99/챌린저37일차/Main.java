@@ -1,3 +1,5 @@
+package com.study.baekjoon.항해99.챌린저37일차;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
